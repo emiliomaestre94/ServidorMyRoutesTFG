@@ -135,8 +135,8 @@ router.post('/',function(req,res){
 				htmlerror(err); 					
 				return res.status(400).json({ error: err });
 			}else{ //Todo bien, creamos los lugares
-				let consulta2;
-				let idRuta=rows.insertId;
+				var consulta2;
+				var idRuta=rows.insertId;
 				if(req.body.tipo=="Panoramicas"){
 					consulta2 = "INSERT INTO lugares_ruta (Id_lugar_lugares_ruta, Id_ruta_lugares_ruta) VALUES ('2' ,"+rows.insertId+");";
 					consulta2 += "INSERT INTO lugares_ruta (Id_lugar_lugares_ruta, Id_ruta_lugares_ruta) VALUES ('3' ,"+rows.insertId+");";
