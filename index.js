@@ -27,6 +27,7 @@ var apiBackup=require('./routes/apiBackup');
 var controlventas=require('./routes/controlventas');
 var contacto=require('./routes/contacto');
 var upload=require('./routes/upload');
+var ruta=require('./routes/ruta');
 
 //CORS, PERMITIMOS  ACCESO A LA API SOLO EN ESTAS RUTAS
 var whitelist = [
@@ -61,6 +62,7 @@ app.use(cookieParser());
 //USO RUTAS
 app.use('/producto',producto);
 app.use('/usuario',usuario);
+app.use('/ruta',ruta);
 app.use('/tienda',tienda);
 app.use('/api',api);
 app.use('/acceso',acceso);

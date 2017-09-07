@@ -1,4 +1,4 @@
-module.exports = function (token, nombre,randomstring) {
+module.exports = function (token, nombre) {
 
 var html=`
 <!DOCTYPE html>
@@ -23,10 +23,9 @@ var html=`
                     <tbody><tr style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;margin:0;padding:0">
                         <td style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;margin:0;padding:0">
                             <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Hola,`+nombre.replace(/'/g, "")+`</p>
-                            <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Gracias por confiar en MyRoutes</p>
-                            <h1 style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:24px;color:#00a18a;line-height:1.2;font-weight:bold;margin:16px 0 10px;padding:0">Cambio de contraseña</h1>
-                            <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Hemos recibido una solicitud para cambiar la contraseña de tu cuenta de MyRoutes</p>
-                            <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Tu nueva contraseña es: `+randomstring+`</p>
+                            <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Bienvenido a MyRoutes</p>
+                            <p style="font-family:-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:14px;color:#00a18a;line-height:1.5;font-weight:normal;margin:0 0 10px;padding:0">Estamos encantados de que formes parte de nuestra familia. Ya puedes empezar a crear tus rutas personalizadas y visitar los lugares más emblematicos de las zonas en las que te encuentres.</p>
+
                         </td>
                     </tr>
                 </tbody></table>

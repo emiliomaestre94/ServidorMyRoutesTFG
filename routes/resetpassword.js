@@ -6,6 +6,7 @@ var comprobacionjwt= require ('../helpers/comprobacionjwt');
 var jwt =require("jsonwebtoken");
 var emailhtml= require ('../emails/htmlresetpassword');
 var emailhtmlmovil= require ('../emails/htmlresetpasswordmovil');
+var emailbienvenida= require ('../emails/htmlbienvenida');
 var nodemailer = require('nodemailer');
 const nodemailerDkim = require('nodemailer-dkim');
 var htmlerror= require ('../emails/htmlerror');
@@ -21,54 +22,61 @@ router.post('/',function(req,res){
         if (err) throw err;
 		var Email = connection.escape(req.body.email);
         console.log(Email);
-		var consulta = "SELECT Email_usuario, Nombre_usuario FROM usuario WHERE Email_usuario="+Email;
+		var consulta = "SELECT Email_usuario, Nick_usuario FROM usuario WHERE Email_usuario="+Email+";";
 		connection.query(consulta,function(err, rows, fields){
 			if(err){
                 console.log(err); 
-                htmlerror(err); 					return res.status(400).json({ error: err });
+                htmlerror(err); 					
+                return res.status(400).json({ error: err });
             }else{
                 if(rows != 0){ // Si que lo ha encontrado
-                    console.log("Usuario encontrado");
-    
-                    var token= jwt.sign({//firmamos el token , que caduca en 24 horas
-                        data: req.body.email
-                        }, mySecretKey, { expiresIn: '24h' });
+                    var nickUsu= rows[0].Nick_usuario;
+                    var randomstring = Math.random().toString(36).slice(-8);
+                    consulta2="UPDATE usuario SET Contra_usuario=md5("+connection.escape(randomstring)+") WHERE Email_usuario="+Email+";";
+                    console.log(consulta2);
+                    connection.query(consulta2,function(err, rows, fields){ 
+                        if(err){
+                            console.log(err); 
+                            htmlerror(err); 					
+                            return res.status(400).json({ error: err });
+                        }else{                     
+                            console.log("Usuario encontrado");
+            
+                            var token= jwt.sign({//firmamos el token , que caduca en 24 horas
+                                data: req.body.email
+                                }, mySecretKey, { expiresIn: '24h' });
 
-                    var smtpTransport = nodemailer.createTransport("SMTP",{
-                        service: "gmail",
-                        auth: {
-                            user: process.env.GMAIL_USER, 
-                            pass: process.env.GMAIL_PASS
-                        }
-                    });
-                    if(req.body.aplicacion==null){
-                        console.log("Email admin");
-                        var htmlcorreo=emailhtml(token, rows[0].Nombre_usuario); 
-                        var mailOptions = {
-                            from: "<appayoficial@gmail.com>", // sender address
-                            to: req.body.email, //
-                            subject: "Restablecer contraseña Appay", // Subject line
-                            html: htmlcorreo
-                        }
-                    }
-                    else{
-                        var htmlcorreo=emailhtmlmovil(token, rows[0].Nombre_usuario); 
-                        var mailOptions = {
-                            from: "<appayoficial@gmail.com>", // sender address
-                            to: req.body.email, //
-                            subject: "Restablecer contraseña Appay", // Subject line
-                            html: htmlcorreo
-                        }
-                    }		
-                    smtpTransport.sendMail(mailOptions, function(error, response){
-                        if(error){
-                            console.log(error);
-                            htmlerror(err); 					return res.status(400).json(error);
-                        }else{
-                            console.log("Correo enviado");
-                            return res.status(200).json("Todo bien todo correcto");
-                        }
-                    });
+                            var smtpTransport = nodemailer.createTransport("SMTP",{
+                                service: "gmail",
+                                auth: {
+                                    user: process.env.GMAIL_USER, 
+                                    pass: process.env.GMAIL_PASS
+                                }
+                            });
+                                
+                                var htmlcorreo=emailhtmlmovil(token, nickUsu,randomstring); 
+                                var mailOptions = {
+                                    from: "<myroutesoficial@gmail.com>", // sender address
+                                    to: req.body.email, //
+                                    subject: "Restablecer contraseña MyRoutes", // Subject line
+                                    html: htmlcorreo
+                                }
+                                
+                                smtpTransport.sendMail(mailOptions, function(error, response){
+                                    if(error){
+                                        console.log(error);
+                                        htmlerror(err); 					return res.status(400).json(error);
+                                    }else{
+                                        console.log("Correo enviado");
+                                        return res.status(200).json("Todo bien todo correcto");
+                                    }
+                                });
+                        }//fin else
+                     });
+
+
+
+
                 }else{
                     console.log("Usuario no encontrado"); 
                     return res.status(204).json("El usuario no existe");   
@@ -78,6 +86,45 @@ router.post('/',function(req,res){
 	connection.release();
 	});
 });
+
+//Peticion de cambio de contraseña. Se llamará cuando alguien no recuerde su contraseña
+router.post('/bienvenida',function(req,res){
+
+    var token= jwt.sign({//firmamos el token , que caduca en 24 horas
+        data: req.body.email
+        }, mySecretKey, { expiresIn: '24h' });
+
+    var smtpTransport = nodemailer.createTransport("SMTP",{
+        service: "gmail",
+        auth: {
+            user: process.env.GMAIL_USER, 
+            pass: process.env.GMAIL_PASS
+        }
+    });
+
+    var htmlcorreo=emailbienvenida(token, req.body.email); 
+    var mailOptions = {
+        from: "<myroutesoficial@gmail.com>", // sender address
+        to: req.body.email, //
+        subject: "Bienvenido a MyRoutes", // Subject line
+        html: htmlcorreo
+    }
+    		
+    smtpTransport.sendMail(mailOptions, function(error, response){
+        if(error){
+            console.log(error);
+            htmlerror(err); 					
+            return res.status(400).json(error);
+        }else{
+            console.log("Correo enviado");
+            return res.status(200).json("Todo bien todo correcto");
+        }
+    });
+                
+});
+
+
+
 
 
 
