@@ -4,7 +4,7 @@ var db = require('../helpers/database')();
 var comprobacionjwt= require ('../helpers/comprobacionjwt');
 
 
-//Rutas de un usuario
+//Rutas de un usuario ()
 router.get('/',comprobacionjwt,function(req,res){	
 	db.getConnection(function(err, connection) {
 		if (err) throw err;
@@ -132,7 +132,7 @@ router.post('/',function(req,res){
 		connection.query(consulta,function(err, rows, fields){
 			if(err){
 				console.log(err);
-				htmlerror(err); 					
+				htmlerror(err); //					
 				return res.status(400).json({ error: err });
 			}else{ //Todo bien, creamos los lugares
 				var consulta2;
